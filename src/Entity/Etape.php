@@ -37,6 +37,11 @@ class Etape
      */
     private $ingredients = [];
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Recette::class, inversedBy="etape")
+     */
+    private $recette;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class Etape
     public function setIngredients(?array $ingredients): self
     {
         $this->ingredients = $ingredients;
+
+        return $this;
+    }
+
+    public function getRecette(): ?Recette
+    {
+        return $this->recette;
+    }
+
+    public function setRecette(?Recette $recette): self
+    {
+        $this->recette = $recette;
 
         return $this;
     }
