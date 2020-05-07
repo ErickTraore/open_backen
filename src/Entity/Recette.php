@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\RecetteRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,14 +28,14 @@ class Recette
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=Etape::class, mappedBy="recette")
+     * @ORM\ManyToOne(targetEntity=Etape::class, inversedBy="recettes")
      */
     private $etape;
 
-    public function __construct()
-    {
-        $this->etape = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $ingredients = [];
 
     public function getId(): ?int
     {
@@ -68,33 +66,26 @@ class Recette
         return $this;
     }
 
-    /**
-     * @return Collection|Etape[]
-     */
-    public function getEtape(): Collection
+    public function getEtape(): ?Etape
     {
         return $this->etape;
     }
 
-    public function addEtape(Etape $etape): self
+    public function setEtape(?Etape $etape): self
     {
-        if (!$this->etape->contains($etape)) {
-            $this->etape[] = $etape;
-            $etape->setRecette($this);
-        }
+        $this->etape = $etape;
 
         return $this;
     }
 
-    public function removeEtape(Etape $etape): self
+    public function getIngredients(): ?array
     {
-        if ($this->etape->contains($etape)) {
-            $this->etape->removeElement($etape);
-            // set the owning side to null (unless already changed)
-            if ($etape->getRecette() === $this) {
-                $etape->setRecette(null);
-            }
-        }
+        return $this->ingredients;
+    }
+
+    public function setIngredients(?array $ingredients): self
+    {
+        $this->ingredients = $ingredients;
 
         return $this;
     }
